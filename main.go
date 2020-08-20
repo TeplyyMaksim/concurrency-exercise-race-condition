@@ -4,21 +4,20 @@ import (
 	"fmt"
 	"runtime"
 	"sync"
+	"sync/atomic"
 )
 
 var wg sync.WaitGroup
 
 func main()  {
-	sum := 0
+	var sum uint64
 	incrementsAmount := 100
 
 	wg.Add(incrementsAmount)
 	for i := 0; i < incrementsAmount; i++  {
 		go func () {
-			sumCopy := sum
+			atomic.AddUint64(&sum, 1)
 			runtime.Gosched()
-			sumCopy += 1
-			sum = sumCopy
 			wg.Done()
 		}()
 	}
