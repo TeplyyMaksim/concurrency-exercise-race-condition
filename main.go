@@ -11,14 +11,17 @@ var wg sync.WaitGroup
 func main()  {
 	sum := 0
 	incrementsAmount := 100
+	var mutex = &sync.Mutex{}
 
 	wg.Add(incrementsAmount)
 	for i := 0; i < incrementsAmount; i++  {
 		go func () {
+			mutex.Lock()
 			sumCopy := sum
 			runtime.Gosched()
 			sumCopy += 1
 			sum = sumCopy
+			mutex.Unlock()
 			wg.Done()
 		}()
 	}
